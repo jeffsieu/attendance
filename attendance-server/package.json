@@ -1,0 +1,16 @@
+{
+  "name": "attendance-server",
+  "version": "1.0.0",
+  "description": "Parse Server running the backend for the attendance app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jeff Sieu",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "parse-server": "^3.9.0",
+    "pg": "^7.14.0"
+  }
+}
