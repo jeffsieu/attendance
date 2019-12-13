@@ -17,5 +17,4 @@ app.use('/parse', parseDatabaseServer);
 var port = 1337;
 var server = app.listen(port, function() {
   console.log('parse-server-example running on port ' + port + '.');
-  server.close();
 });
