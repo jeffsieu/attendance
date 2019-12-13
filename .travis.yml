@@ -13,5 +13,6 @@ jobs:
         - sudo service postgresql start
         - psql -c "ALTER USER postgres PASSWORD 'password';" -U postgres
         - "node index.js &"
+        - "sleep 15"
       script:
         - "python setup.py"
