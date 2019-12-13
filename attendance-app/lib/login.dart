@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Scaffold(
+      home: const Scaffold(
         body: LoginPage(title: 'Attendance Home Page'),
       ),
     );
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
 }
 
 class LoginPage extends StatefulWidget {
-  LoginPage({Key key, this.title}) : super(key: key);
+  const LoginPage({Key key, this.title}) : super(key: key);
 
   final String title;
 
@@ -97,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
               children: <Widget>[
                 TabBar(
                   labelColor: Theme.of(context).accentColor,
-                  tabs: <Widget>[
+                  tabs: const <Widget>[
                     Tab(text: 'Login'),
                     Tab(text: 'Register'),
                   ],
@@ -132,7 +132,7 @@ class _LoginPageState extends State<LoginPage> {
             child: TextFormField(
               controller: _nameTextController,
               validator: _nameValidator,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Full name',
               ),
@@ -143,7 +143,7 @@ class _LoginPageState extends State<LoginPage> {
             child: TextFormField(
               controller: _usernameTextController,
               validator: _usernameValidator,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Phone number',
               ),
@@ -155,7 +155,7 @@ class _LoginPageState extends State<LoginPage> {
               controller: _passwordTextController,
               obscureText: true,
               validator: _passwordValidator,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Password',
               ),
@@ -196,7 +196,7 @@ class _LoginPageState extends State<LoginPage> {
             child: TextFormField(
               controller: _usernameTextController,
               validator: _usernameValidator,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Phone number',
               ),
@@ -208,7 +208,7 @@ class _LoginPageState extends State<LoginPage> {
               controller: _passwordTextController,
               obscureText: true,
               validator: _passwordValidator,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Password',
               ),

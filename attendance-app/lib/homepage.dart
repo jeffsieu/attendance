@@ -1,13 +1,12 @@
 import 'package:attendance/user.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
-import 'package:timeago/timeago.dart' as timeago;
+import 'package:timeago/timeago.dart' as time_ago;
 import 'package:intl/intl.dart';
 
 import 'database_helper.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage(this.sessionToken, this.user);
+  const HomePage(this.sessionToken, this.user);
 
   final String sessionToken;
   final User user;
@@ -36,26 +35,34 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
+    return FutureBuilder<List<String>>(
       future: getRoles(widget.sessionToken),
       builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
-        bool isAdmin = snapshot.hasData && (snapshot.data.contains('Admins') || snapshot.data.contains('Master Admins'));
-        bool isMasterAdmin = snapshot.hasData  && snapshot.data.contains('Master Admins');
+        final bool isAdmin = snapshot.hasData && (snapshot.data.contains('Admins') || snapshot.data.contains('Master Admins'));
+        final bool isMasterAdmin = snapshot.hasData  && snapshot.data.contains('Master Admins');
 
         return Scaffold(
           appBar: AppBar(
             title: Text('Hello, ${widget.user.name}'),
             actions: <Widget>[
-              PopupMenuButton(
-                icon: Icon(Icons.filter_list),
-                itemBuilder: (BuildContext context) {
-                  return <PopupMenuEntry>[
-                    PopupMenuItem(
-                      child: Text('test'),
-                    )
-                  ];
-                }
-              )
+              FutureBuilder<List<User>>(
+                future: getSubordinates(widget.user.id),
+                builder: (BuildContext context, AsyncSnapshot<List<User>> snapshot) => PopupMenuButton<User>(
+                  icon: Icon(Icons.filter_list),
+                  onSelected: (User user) {
+                    print(user.name);
+                  },
+                  itemBuilder: (BuildContext context) {
+                    return <PopupMenuEntry<User>>[
+                      for (User user in snapshot.data)
+                        PopupMenuItem<User>(
+                          child: Text(user.name),
+                          value: user,
+                        ),
+                    ];
+                  },
+                ),
+              ),
             ],
             bottom: isAdmin ? TabBar(
               controller: _tabController,
@@ -70,7 +77,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             builder: (BuildContext context) => FloatingActionButton.extended(
               icon: Icon(Icons.check),
               onPressed: () => _markAttendance(context),
-              label: Text('Mark attendance'),
+              label: const Text('Mark attendance'),
             ),
           ),
         );
@@ -79,7 +86,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   }
 
   Widget _buildBody(bool isAdmin, bool isMasterAdmin) {
-    Widget mainWidget = buildAttendanceList(isMasterAdmin);
+    final Widget mainWidget = buildAttendanceList(isMasterAdmin);
 
     if (!isAdmin)
       return mainWidget;
@@ -97,18 +104,19 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       future: retrieveAttendanceRecords(widget.user.id, isMasterAdmin),
       builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
         if (!snapshot.hasData)
-          return Center(child: const CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         if (snapshot.data.isEmpty)
-          return Center(child: Text('No attendance records found'));
+          return const Center(child: Text('No attendance records found'));
 
         return ListView.separated(
           padding: const EdgeInsets.only(bottom: kFloatingActionButtonMargin + 48),
           itemBuilder: (BuildContext context, int position) {
-            User user = (snapshot.data[position]['user'] as User);
-            String username = user.username == widget.user.username ? 'Me': user.name;
-            DateTime reportingTime = DateTime.parse(snapshot.data[position]['reportingTime']);
-            String timeReadable = timeago.format(reportingTime);
-            String timeFull = DateFormat('dd MMM yy, HH:mm').format(reportingTime);
+            final User user = snapshot.data[position]['user'] as User;
+            final String username = user.username == widget.user.username ? 'Me': user.name;
+            final DateTime reportingTime = DateTime.parse(snapshot.data[position]['reportingTime']);
+            final String timeReadable = time_ago.format(reportingTime);
+            final String timeFull = DateFormat('dd MMM yy, HH:mm').format(reportingTime);
+
             return ListTile(
               title: Text('$username (${user.group})'),
               subtitle: Text('$timeReadable · $timeFull'),
@@ -126,7 +134,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       builder: (BuildContext context) => ListView(
         padding: const EdgeInsets.only(bottom: kFloatingActionButtonMargin + 48),
         children: <Widget>[
-          if (isMasterAdmin) ... {
+          if (isMasterAdmin) ... <Widget>{
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Card(
@@ -162,13 +170,13 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                             Expanded(
                               child: TextField(
                                 controller: _masterAdminTextController,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   hintText: 'Phone number',
                                 ),
                               ),
                             ),
                             IconButton(
-                              icon: Icon(Icons.add),
+                              icon: const Icon(Icons.add),
                               tooltip: 'Add user as master admin',
                               onPressed: () => _addMasterAdmin(context),
                             ),
@@ -216,13 +224,13 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                             Expanded(
                               child: TextField(
                                 controller: _adminTextController,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   hintText: 'Phone number',
                                 ),
                               ),
                             ),
                             IconButton(
-                              icon: Icon(Icons.add),
+                              icon: const Icon(Icons.add),
                               tooltip: 'Add user as admin',
                               onPressed: () => _addAdmin(context),
                             ),
@@ -272,13 +280,13 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                             Expanded(
                               child: TextField(
                                 controller: _subordinateTextController,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   hintText: 'Phone number',
                                 ),
                               ),
                             ),
                             IconButton(
-                              icon: Icon(Icons.add),
+                              icon: const Icon(Icons.add),
                               tooltip: 'Add subordinate',
                               onPressed: () => _addSubordinate(context),
                             ),
@@ -385,116 +393,79 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     );
   }
 
-  void _markAttendance(BuildContext context) async {
-    final Response response = await markAttendance(widget.sessionToken);
-
-    Scaffold.of(context).showSnackBar(SnackBar(content: Text('Marked attendance')));
-    setState(() {
-
-    });
+  Future<void> _markAttendance(BuildContext context) async {
+    await markAttendance(widget.user);
+    _showSnackBar('Marked attendance');
+    setState(() {});
   }
 
-  void _addAdmin(BuildContext context) async {
+  void _showSnackBar(String message) {
+    Scaffold.of(context).showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  Future<void> _handleFuture(Future<String> future, {@required String onSuccess}) async {
+    final String errorMessage = await future;
+    if (errorMessage != null)
+      _showSnackBar(errorMessage);
+    else {
+      _showSnackBar(onSuccess);
+      setState(() {});
+    }
+  }
+
+  Future<void> _addAdmin(BuildContext context) async {
     final String usernameToAdd = _adminTextController.text;
     if (usernameToAdd == widget.user.username) {
-      Scaffold.of(context).showSnackBar(SnackBar(content: Text('You are already an admin')));
+      _showSnackBar('You are already an admin');
       return;
     }
 
-    final String errorMessage = await addAdmin(usernameToAdd);
-    if (errorMessage == null) {
-      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Added $usernameToAdd as admin')));
-      setState(() {
-
-      });
-    } else {
-      Scaffold.of(context).showSnackBar(SnackBar(content: Text(errorMessage)));
-    }
+    _handleFuture(addAdmin(usernameToAdd), onSuccess: 'Added $usernameToAdd as admin');
   }
 
-  void _removeAdmin(BuildContext context, String username) async {
-    Function remove = () async {
-      final String errorMessage = await removeAdmin(username);
-      if (errorMessage == null) {
-        Scaffold.of(context).showSnackBar(SnackBar(content: Text('Removed $username as admin')));
-        setState(() {
-
-        });
-      } else {
-        Scaffold.of(context).showSnackBar(SnackBar(content: Text(errorMessage)));
-      }
+  Future<void> _removeAdmin(BuildContext context, String username) async {
+    final Function removeFunction = () async {
+      await _handleFuture(removeAdmin(username), onSuccess: 'Removed $username as admin');
     };
 
     Scaffold.of(context).showSnackBar(SnackBar(
       content: Text('Remove $username as an admin?'),
-      action: SnackBarAction(onPressed: remove, label: 'Yes'),
+      action: SnackBarAction(onPressed: removeFunction, label: 'Yes'),
     ));
   }
 
-  void _addMasterAdmin(BuildContext context) async {
+  Future<void> _addMasterAdmin(BuildContext context) async {
     final String usernameToAdd = _masterAdminTextController.text;
     if (usernameToAdd == widget.user.username) {
-      Scaffold.of(context).showSnackBar(SnackBar(content: Text('You are already a master admin')));
+      _showSnackBar('You are already a master admin');
       return;
     }
 
-    final String errorMessage = await addMasterAdmin(usernameToAdd);
-    if (errorMessage == null) {
-      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Added $usernameToAdd as master admin')));
-      setState(() {
-
-      });
-    } else {
-      Scaffold.of(context).showSnackBar(SnackBar(content: Text(errorMessage)));
-    }
+    _handleFuture(addMasterAdmin(usernameToAdd), onSuccess: 'Added $usernameToAdd as master admin');
   }
 
-  void _removeMasterAdmin(BuildContext context, String username) async {
-    Function remove = () async {
-      final String errorMessage = await removeMasterAdmin(username);
-      if (errorMessage == null) {
-        Scaffold.of(context).showSnackBar(SnackBar(content: Text('Removed $username as master admin')));
-        setState(() {
-
-        });
-      } else {
-        Scaffold.of(context).showSnackBar(SnackBar(content: Text(errorMessage)));
-      }
+  Future<void> _removeMasterAdmin(BuildContext context, String username) async {
+    final Function removeFunction = () async {
+      await _handleFuture(removeMasterAdmin(username), onSuccess: 'Removed $username as master admin');
     };
 
     Scaffold.of(context).showSnackBar(SnackBar(
       content: Text('Remove $username as a master admin?'),
-      action: SnackBarAction(onPressed: remove, label: 'Yes'),
+      action: SnackBarAction(onPressed: removeFunction, label: 'Yes'),
     ));
   }
 
-  void _addSubordinate(BuildContext context) async {
+  Future<void> _addSubordinate(BuildContext context) async {
     final String usernameToAdd = _subordinateTextController.text;
     if (usernameToAdd == widget.user.username) {
-      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Cannot add yourself as a subordinate')));
+      _showSnackBar('Cannot add yourself as a subordinate');
       return;
     }
 
-    final String errorMessage = await addSubordinate(widget.user.id, usernameToAdd);
-    if (errorMessage == null) {
-      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Added $usernameToAdd as subordinate')));
-      setState(() {
-
-      });
-    } else {
-      Scaffold.of(context).showSnackBar(SnackBar(content: Text(errorMessage)));
-    }
+    await _handleFuture(addSubordinate(widget.user.id, usernameToAdd), onSuccess: 'Added $usernameToAdd as subordinate');
   }
 
-  void _removeSubordinate(BuildContext context, String username) async {
-    final String errorMessage = await removeSubordinate(widget.user.id, username);
-    if (errorMessage == null) {
-      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Removed $username as subordinate')));
-      setState(() {
-
-      });
-    } else {
-      Scaffold.of(context).showSnackBar(SnackBar(content: Text(errorMessage)));
-    }
+  Future<void> _removeSubordinate(BuildContext context, String username) async {
+    await _handleFuture(removeSubordinate(widget.user.id, username), onSuccess: 'Removed $username as subordinate');
   }
 }
