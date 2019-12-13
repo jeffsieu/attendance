@@ -11,6 +11,7 @@ jobs:
   include:
     - stage: "set up parse server scheme"
       install: "cd attendance-server && npm install"
-      script: 
-        - "node test.js"
+      before_script:
+        - "node test.js" &"
+      script:
         - "python setup.py"
