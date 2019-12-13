@@ -118,7 +118,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             final String timeFull = DateFormat('dd MMM yy, HH:mm').format(reportingTime);
 
             return ListTile(
-              title: Text(username),
+              title: Text('$username (${user.group})'),
               subtitle: Text('$timeReadable · $timeFull'),
             );
           },
