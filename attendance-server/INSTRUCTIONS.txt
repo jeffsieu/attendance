@@ -1,1 +1,0 @@
-To set up the server,run the following command:sh setup.shThis creates a master admin:Username: 12345678Password: adminpassword123Then: sudo service postgresql startsudo -u postgres psqlthen type in:ALTER USER postgres PASSWORD 'password';\qsudo -u postgres node index.jspython setup.py
