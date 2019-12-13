@@ -3,12 +3,11 @@ dist: xenial
 services:
   - postgresql
 before_script:
-  - psql -c "ALTER USER postgres PASSWORD 'password';"; -U postgres
-jobs: 
-  include: 
-    - stage: "install parse server dependencies"
-      script: "cd attendance-server && npm install"
+  - psql -c "ALTER USER postgres PASSWORD 'password';" -U postgres
+jobs:
+  include:
     - stage: "set up parse server scheme"
+      install: "cd attendance-server && npm install"
       script: 
         - "sudo -u postgres node index.js"
         - "python setup.py"
