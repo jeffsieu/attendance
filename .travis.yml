@@ -12,5 +12,5 @@ jobs:
     - stage: "set up parse server scheme"
       install: "cd attendance-server && npm install"
       script: 
-        - "sudo -u postgres node index.js"
+        - "node index.js"
         - "python setup.py"
