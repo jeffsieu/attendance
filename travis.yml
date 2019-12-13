@@ -1,0 +1,20 @@
+--- 
+before_install: 
+  - "sh setup.sh"
+jobs: 
+  include: 
+    - 
+      script: "npm install"
+      stage: "install parse server dependencies"
+    - 
+      script: 
+        - "sudo service postgresql start"
+        - "sudo -u postgres psql"
+        - "ALTER USER postgres PASSWORD 'password';"
+        - \q
+      stage: "initialize postgresql server"
+    - 
+      script: 
+        - "sudo -u postgres node index.js"
+        - "python setup.py"
+      stage: "set up parse server scheme"
