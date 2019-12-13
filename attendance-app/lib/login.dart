@@ -20,7 +20,6 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: Scaffold(
-        resizeToAvoidBottomInset: false,
         body: LoginPage(title: 'Attendance Home Page'),
       ),
     );
@@ -43,6 +42,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _usernameTextController = TextEditingController();
   final TextEditingController _passwordTextController = TextEditingController();
   final TextEditingController _nameTextController = TextEditingController();
+  final TextEditingController _groupTextController = TextEditingController();
 
   bool _isLoading = false;
 
@@ -61,6 +61,12 @@ class _LoginPageState extends State<LoginPage> {
   String _nameValidator(String value) {
     if (value.isEmpty)
       return 'Enter your name';
+    return null;
+  }
+
+  String _groupValidator(String value) {
+    if (value.isEmpty)
+      return 'Enter your group';
     return null;
   }
 
@@ -155,6 +161,17 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextFormField(
+              controller: _groupTextController,
+              validator: _groupValidator,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Group',
+              ),
+            ),
+          ),
           if (_isLoading)
             const CircularProgressIndicator(),
           RaisedButton(
@@ -242,12 +259,13 @@ class _LoginPageState extends State<LoginPage> {
       final String username = _usernameTextController.text;
       final String password = _passwordTextController.text;
       final String name = _nameTextController.text;
+      final String group = _groupTextController.text;
 
       setState(() {
         _isLoading = true;
       });
 
-      createUser(username, password, name).then((response) {
+      createUser(username, password, name, group).then((response) {
         setState(() {
           _isLoading = false;
         });

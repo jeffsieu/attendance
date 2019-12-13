@@ -53,7 +53,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                     PopupMenuItem(
                       child: Text('test'),
                     )
-                  ];    
+                  ];
+                }
               )
             ],
             bottom: isAdmin ? TabBar(
@@ -109,7 +110,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             String timeReadable = timeago.format(reportingTime);
             String timeFull = DateFormat('dd MMM yy, HH:mm').format(reportingTime);
             return ListTile(
-              title: Text(username),
+              title: Text('$username (${user.group})'),
               subtitle: Text('$timeReadable · $timeFull'),
             );
           },

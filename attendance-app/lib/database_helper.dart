@@ -22,9 +22,9 @@ Future<http.Response> _delete(String url, {Map<String, String> headers}) {
   return http.delete(_databaseRootUrl + url, headers: _headers..addAll(headers ?? {}));
 }
 
-Future<http.Response> createUser(String username, String password, String name) async {
+Future<http.Response> createUser(String username, String password, String name, String group) async {
   final String url = 'users';
-  final http.Response response = await _post(url, body: {'username': username, 'password': password, 'name': name});
+  final http.Response response = await _post(url, body: {'username': username, 'password': password, 'name': name, 'group': group});
   return response;
 }
 
