@@ -11,7 +11,7 @@ class User {
       id: map['objectId'],
       name: map['name'],
       username: map['username'],
-      group: map['group']
+      group: map['group'],
     );
   }
 }
