@@ -19,8 +19,20 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const Scaffold(
-        body: LoginPage(title: 'Attendance Home Page'),
+      home: DefaultTabController(
+        length: 2,
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('Attendance'),
+            bottom: const TabBar(
+              tabs: <Widget>[
+                Tab(text: 'Login'),
+                Tab(text: 'Register'),
+              ],
+            ),
+          ),
+          body: const LoginPage(title: 'Attendance Home Page'),
+        ),
       ),
     );
   }
@@ -86,101 +98,76 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Center(
-        child: Card(
-          child: DefaultTabController(
-            length: 2,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                TabBar(
-                  labelColor: Theme.of(context).accentColor,
-                  tabs: const <Widget>[
-                    Tab(text: 'Login'),
-                    Tab(text: 'Register'),
-                  ],
-                ),
-                ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height*0.5,
-                  ),
-                  child: TabBarView(
-                    children: <Widget>[
-                      _buildLoginForm(),
-                      _buildRegisterForm(),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+    return TabBarView(
+      children: <Widget>[
+        _buildLoginForm(),
+        _buildRegisterForm(),
+      ],
     );
   }
 
   Widget _buildRegisterForm() {
     return Form(
       key: _registerFormKey,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextFormField(
-              controller: _nameTextController,
-              validator: _nameValidator,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Full name',
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextFormField(
+                controller: _nameTextController,
+                validator: _nameValidator,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Full name',
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextFormField(
-              controller: _usernameTextController,
-              validator: _usernameValidator,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Phone number',
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextFormField(
+                controller: _usernameTextController,
+                validator: _usernameValidator,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Phone number',
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextFormField(
-              controller: _passwordTextController,
-              obscureText: true,
-              validator: _passwordValidator,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Password',
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextFormField(
+                controller: _passwordTextController,
+                obscureText: true,
+                validator: _passwordValidator,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Password',
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextFormField(
-              controller: _groupTextController,
-              validator: _groupValidator,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Group',
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextFormField(
+                controller: _groupTextController,
+                validator: _groupValidator,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Group',
+                ),
               ),
             ),
-          ),
-          if (_isLoading)
-            const CircularProgressIndicator(),
-          RaisedButton(
-            color: Theme.of(context).accentColor,
-            textColor: Colors.white,
-            child: const Text('Create account'),
-            onPressed: _createAccount,
-          )
-        ],
+            if (_isLoading)
+              const CircularProgressIndicator(),
+            RaisedButton(
+              color: Theme.of(context).accentColor,
+              textColor: Colors.white,
+              child: const Text('Create account'),
+              onPressed: _createAccount,
+            )
+          ],
+        ),
       ),
     );
   }
@@ -188,41 +175,43 @@ class _LoginPageState extends State<LoginPage> {
   Widget _buildLoginForm() {
     return Form(
       key: _loginFormKey,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextFormField(
-              controller: _usernameTextController,
-              validator: _usernameValidator,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Phone number',
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextFormField(
+                controller: _usernameTextController,
+                validator: _usernameValidator,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Phone number',
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextFormField(
-              controller: _passwordTextController,
-              obscureText: true,
-              validator: _passwordValidator,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Password',
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextFormField(
+                controller: _passwordTextController,
+                obscureText: true,
+                validator: _passwordValidator,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Password',
+                ),
               ),
             ),
-          ),
-          if (_isLoading)
-            const CircularProgressIndicator(),
-          RaisedButton(
-            color: Theme.of(context).accentColor,
-            textColor: Colors.white,
-            child: const Text('Login'),
-            onPressed: _login,
-          ),
-        ],
+            if (_isLoading)
+              const CircularProgressIndicator(),
+            RaisedButton(
+              color: Theme.of(context).accentColor,
+              textColor: Colors.white,
+              child: const Text('Login'),
+              onPressed: _login,
+            ),
+          ],
+        ),
       ),
     );
   }
