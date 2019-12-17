@@ -1,0 +1,18 @@
+--- 
+dist: xenial
+language: node_js
+node_js:
+  - 13
+services:
+  - postgresql
+jobs:
+  include:
+    - stage: "set up parse server scheme"
+      install: "cd attendance-server && npm install"
+      before_script:
+        - sudo service postgresql start
+        - psql -c "ALTER USER postgres PASSWORD 'password';" -U postgres
+        - "node index.js &"
+        - "sleep 10"
+      script:
+        - "python setup.py"
