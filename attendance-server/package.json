@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
-    "parse-server": "^3.9.0",
+    "parse-server": "^4.1.0",
     "pg": "^7.14.0"
   }
 }
